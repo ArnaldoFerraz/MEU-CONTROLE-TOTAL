@@ -1,0 +1,26 @@
+{
+  "name": "MEU CONTROLE TOTAL",
+  "short_name": "Controle Total",
+  "description": "ERP completo para finanças pessoais, veículos, entregas, contas da casa e metas.",
+  "start_url": "./app.html",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "favicon.ico",
+      "sizes": "192x192",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "favicon.ico",
+      "sizes": "512x512",
+      "type": "image/x-icon"
+    }
+  ]
+}

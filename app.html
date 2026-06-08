@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>MEU CONTROLE TOTAL - ERP Pessoal</title>
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Controle Total">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="stylesheet" href="investment-styles.css?v=1">
+</head>
+<body>
+    <div class="app-root">
+        
+        <header class="topbar">
+            <div class="topbar-left">
+                <button
+                    id="mobile-menu-toggle"
+                    class="mobile-menu-toggle"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="main-topnav"
+                    aria-label="Abrir menu de navegação"
+                >
+                    <span class="hamburger-line" aria-hidden="true"></span>
+                    <span class="hamburger-line" aria-hidden="true"></span>
+                    <span class="hamburger-line" aria-hidden="true"></span>
+                </button>
+                <a href="#dashboard" class="brand topbar-brand" aria-label="MEU CONTROLE TOTAL">
+                    <span class="brand-mark">
+                        <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+                            <defs>
+                                <linearGradient id="appLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#2563eb" />
+                                    <stop offset="100%" stop-color="#22c55e" />
+                                </linearGradient>
+                            </defs>
+                            <rect x="10" y="18" width="12" height="28" rx="6" fill="url(#appLogoGradient)" />
+                            <rect x="28" y="14" width="12" height="32" rx="6" fill="url(#appLogoGradient)" opacity="0.85" />
+                            <rect x="46" y="10" width="12" height="36" rx="6" fill="url(#appLogoGradient)" opacity="0.65" />
+                        </svg>
+                    </span>
+                    <span class="brand-copy">
+                        <strong>MEU CONTROLE TOTAL</strong>
+                        <span>ERP pessoal completo</span>
+                    </span>
+                </a>
+            </div>
+            <div class="topbar-right">
+                <div class="user-welcome">Olá, <span id="user-name">Usuário</span></div>
+                <div class="month-filter">
+                    <label for="timeline-month">Mês</label>
+                    <select id="timeline-month"></select>
+                </div>
+                <button id="theme-toggle" class="topbar-action icon-button" type="button" title="Alternar tema">🌙</button>
+                <button id="logout-button" class="topbar-action secondary" type="button">Sair</button>
+            </div>
+        </header>
+        <div id="mobile-nav-overlay" class="mobile-nav-overlay" hidden aria-hidden="true"></div>
+        <nav class="topnav" id="main-topnav" aria-label="Navegação principal" aria-hidden="true" inert>
+            <button type="button" id="mobile-nav-close" class="mobile-nav-close" aria-label="Fechar menu">✕</button>
+            <button class="topnav-item active" data-tab="dashboard" type="button">🏠 Dashboard</button>
+            <button class="topnav-item" data-tab="board" type="button">💰 Transações</button>
+            <button class="topnav-item" data-tab="invoices" type="button">📄 Faturas</button>
+            <button class="topnav-item" data-tab="reports" type="button">📊 Relatórios</button>
+            <button class="topnav-item" data-tab="investments" type="button">💎 Investimentos</button>
+            <button class="topnav-item" data-tab="modules" type="button">🧩 Módulos</button>
+            <button class="topnav-item" data-tab="assistant" type="button">🤖 Assistente</button>
+        </nav>
+        <main id="app-container" class="container main-panel">
+            <div class="summary grid">
+                <p id="dashboard-period-label" class="dashboard-period-label summary-period" aria-live="polite"></p>
+                <div class="card">
+                    <h2>Saldo atual</h2>
+                    <p id="balance" class="balance-value">R$ 0,00</p>
+                </div>
+                <div class="card">
+                    <h2>Receitas</h2>
+                    <p id="total-income" class="income-value">R$ 0,00</p>
+                </div>
+                <div class="card">
+                    <h2>Despesas</h2>
+                    <p id="total-expense" class="expense-value">R$ 0,00</p>
+                </div>
+                <div class="card small">
+                    <h2>Faturas abertas</h2>
+                    <p id="open-invoices">0</p>
+                </div>
+                <div class="card">
+                    <h2>Meta mensal</h2>
+                    <p id="monthly-goal">R$ 0,00</p>
+                    <div class="goal-progress"><div id="summary-goal-progress-bar"></div></div>
+                    <p id="goal-progress-text" class="goal-progress-text">Defina uma meta para acompanhar seu orçamento.</p>
+                </div>
+                <div class="card small">
+                    <h2>Lucro real total</h2>
+                    <p id="real-profit">R$ 0,00</p>
+                </div>
+                <div class="card small">
+                    <h2>Gastos carro/moto</h2>
+                    <p id="vehicle-expense">R$ 0,00</p>
+                </div>
+                <div class="card small">
+                    <h2>KM total rodado</h2>
+                    <p id="total-km">0 km</p>
+                </div>
+                <div class="card small">
+                    <h2>Custo por KM</h2>
+                    <p id="cost-per-km">R$ 0,00</p>
+                </div>
+            </div>
+
+        <section id="dashboard" class="content-section dashboard grid">
+            <div id="projection-card" class="card projection-card">
+                <div class="projection-card-header">
+                    <div id="projection-icon" class="projection-icon" aria-hidden="true">
+                        <svg class="projection-icon-svg projection-icon-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                            <circle cx="12" cy="12" r="4"/>
+                        </svg>
+                        <svg class="projection-icon-svg projection-icon-alert hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                            <line x1="12" y1="9" x2="12" y2="13"/>
+                            <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2>Projeção Financeira</h2>
+                        <p id="projection-month-label" class="projection-subtitle">Mês atual</p>
+                    </div>
+                </div>
+                <div class="projection-metrics">
+                    <div class="projection-metric">
+                        <span>Faturas à prazo a pagar (próx. 30 dias)</span>
+                        <strong id="projection-pending-invoices">R$ 0,00</strong>
+                    </div>
+                    <div class="projection-metric">
+                        <span>Saldo projetado</span>
+                        <strong id="projection-balance" class="projection-balance-value">R$ 0,00</strong>
+                    </div>
+                    <div class="projection-metric">
+                        <span>Entradas previstas (mês)</span>
+                        <strong id="projection-expected-income">R$ 0,00</strong>
+                    </div>
+                </div>
+                <p id="projection-message" class="projection-message"></p>
+                <p id="projection-legend" class="projection-legend" title="Detalhamento do cálculo da projeção"></p>
+                <div class="projection-actions">
+                    <button type="button" id="projection-add-income" class="projection-add-income-btn">+ Adicionar Receita</button>
+                </div>
+            </div>
+
+            <div class="card chart-card">
+                <div class="card-header">
+                    <h2>Fluxo mensal</h2>
+                    <p>Receitas e despesas nos últimos 6 meses</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="flow-chart" aria-label="Gráfico de fluxo mensal"></canvas>
+                </div>
+            </div>
+            
+            <div class="card table-wrapper">
+                <h2>Resumo por cartão</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cartão</th>
+                            <th>Despesa total</th>
+                            <th>Fatura aberta</th>
+                        </tr>
+                    </thead>
+                    <tbody id="card-summary-list"></tbody>
+                </table>
+            </div>
+
+            <div class="card chart-card">
+                <div class="card-header">
+                    <h2>Despesas por categoria</h2>
+                    <p>Veja onde o dinheiro está sendo gasto</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="expense-chart" aria-label="Gráfico de despesas por categoria"></canvas>
+                </div>
+            </div>
+
+            <div class="card chart-card">
+                <div class="card-header">
+                    <h2>Faturas</h2>
+                    <p>Status das faturas abertas e pagas</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="invoice-chart" aria-label="Gráfico de status de faturas"></canvas>
+                </div>
+            </div>
+            <div class="card chart-card">
+                <div class="card-header">
+                    <h2>Ganhos por app</h2>
+                    <p>Compare Uber, iFood, 99 e outros em receita líquida.</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="earnings-app-chart" aria-label="Gráfico de ganhos por aplicativo"></canvas>
+                </div>
+            </div>
+            <div class="card chart-card">
+                <div class="card-header">
+                    <h2>Gastos por veículo</h2>
+                    <p>Resumo de manutenção, combustível e multas por veículo.</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="vehicle-expense-chart" aria-label="Gráfico de gastos por veículo"></canvas>
+                </div>
+            </div>
+            <div class="card chart-card">
+                <div class="card-header">
+                    <h2>Lucro mensal real</h2>
+                    <p>Finanças + entregas, mês a mês.</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="real-profit-chart" aria-label="Gráfico de lucro real mensal"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- NOVA SEÇÃO: ABA DE TRANSAÇÕES (DADOS SALVOS) -->
+        <section id="board" class="content-section board grid hidden">
+            <div class="card table-wrapper">
+                <div class="table-header">
+                    <h2>Histórico de Transações</h2>
+                    <button type="button" id="export-transactions">📥 Exportar CSV</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Descrição</th>
+                            <th>Cartão</th>
+                            <th>Categoria</th>
+                            <th>Valor</th>
+                            <th>Data</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transaction-list"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- NOVA SEÇÃO: ABA DE FATURAS (DADOS SALVOS) -->
+        <section id="invoices" class="content-section invoices grid hidden">
+            <div class="card table-wrapper">
+                <div class="table-header">
+                    <h2>Faturas do Cartão</h2>
+                    <button type="button" id="export-invoices">📥 Exportar CSV</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cartão</th>
+                            <th>Valor / Pagamento</th>
+                            <th>Vencimento</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invoice-list"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="reports" class="content-section reports grid hidden">
+            <div class="card report-card">
+                <div class="card-header">
+                    <h2>Relatórios</h2>
+                    <p>Resumo financeiro mensal, principais categorias e cartões.</p>
+                </div>
+                <div class="report-metrics grid">
+                    <div class="report-metric">
+                        <span>Total despesas mês</span>
+                        <strong id="report-month-expense">R$ 0,00</strong>
+                    </div>
+                    <div class="report-metric">
+                        <span>Total receitas mês</span>
+                        <strong id="report-month-income">R$ 0,00</strong>
+                    </div>
+                    <div class="report-metric">
+                        <span>Saldo mês</span>
+                        <strong id="report-month-balance">R$ 0,00</strong>
+                    </div>
+                </div>
+                <div class="report-tables">
+                    <div class="table-wrapper">
+                        <h3>Top categorias</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Categoria</th>
+                                    <th>Despesa</th>
+                                </tr>
+                            </thead>
+                            <tbody id="report-category-list"></tbody>
+                        </table>
+                    </div>
+                    <div class="table-wrapper">
+                        <h3>Top cartões</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Cartão</th>
+                                    <th>Despesa</th>
+                                </tr>
+                            </thead>
+                            <tbody id="report-card-list"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="goal-setup">
+                    <h3>📊 Meta de Orçamento Mensal</h3>
+                    <div class="goal-status">
+                        <div class="goal-value-display">
+                            <span class="goal-label">Meta definida</span>
+                            <p id="goal-value-display" class="goal-value-large">—</p>
+                        </div>
+                        <div class="goal-spent-display">
+                            <span class="goal-label">Gastos</span>
+                            <p id="goal-spent-display" class="goal-spent-large">—</p>
+                        </div>
+                        <div class="goal-remaining-display">
+                            <span class="goal-label">Restante</span>
+                            <p id="goal-remaining-display" class="goal-remaining-large">—</p>
+                        </div>
+                    </div>
+                    <div class="goal-progress-container">
+                        <div class="goal-progress-detailed">
+                            <div class="goal-progress">
+                                <div id="goal-progress-bar"></div>
+                            </div>
+                            <div class="goal-progress-stats">
+                                <span id="goal-progress-percent">0%</span>
+                                <span id="goal-status-indicator" class="status-indicator">● Nenhuma meta</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="goal-inputs">
+                        <input type="number" id="budget-goal" placeholder="Digite a meta mensal (R$)" min="0" step="0.01">
+                        <button type="button" id="save-budget-goal">💾 Salvar Meta</button>
+                    </div>
+                    <p id="goal-feedback" class="goal-feedback"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO DE INVESTIMENTOS -->
+        <section id="investments" class="content-section investments grid hidden">
+            <!-- Cards de Resumo -->
+            <div class="investments-summary grid">
+                <div class="card investment-summary-card">
+                    <h3>Total Investido</h3>
+                    <p id="investments-total-invested" class="investment-metric-value">R$ 0,00</p>
+                    <span class="investment-metric-label">Todos os ativos</span>
+                </div>
+                <div class="card investment-summary-card">
+                    <h3>Valor Atual</h3>
+                    <p id="investments-total-current" class="investment-metric-value">R$ 0,00</p>
+                    <span class="investment-metric-label">Preço de mercado</span>
+                </div>
+                <div class="card investment-summary-card">
+                    <h3>Ganho/Perda</h3>
+                    <p id="investments-total-profit" class="investment-metric-value">R$ 0,00</p>
+                    <p id="investments-total-profit-percent" class="investment-metric-percent">0%</p>
+                </div>
+            </div>
+
+            <!-- Filtros por Tipo -->
+            <div class="card investments-filters">
+                <h3>Filtrar por tipo</h3>
+                <div class="filter-buttons">
+                    <button type="button" class="filter-btn active" data-filter="all">📊 Todos</button>
+                    <button type="button" class="filter-btn" data-filter="acao">📈 Ações</button>
+                    <button type="button" class="filter-btn" data-filter="cripto">₿ Criptomoedas</button>
+                    <button type="button" class="filter-btn" data-filter="fii">🏢 FIIs</button>
+                </div>
+            </div>
+
+            <!-- Botão de Adicionar Ativo -->
+            <div class="card investments-actions">
+                <button type="button" id="add-investment-btn" class="btn-primary">+ Adicionar Ativo</button>
+            </div>
+
+            <!-- Tabela de Investimentos -->
+            <div class="card table-wrapper investments-table">
+                <h2>Meus Ativos</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ativo</th>
+                            <th>Tipo</th>
+                            <th>Quantidade</th>
+                            <th>Preço Médio</th>
+                            <th>Investido</th>
+                            <th>Valor Atual</th>
+                            <th>Ganho/Perda</th>
+                            <th>Variação</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="investments-list"></tbody>
+                </table>
+            </div>
+
+            <!-- Cards Responsivos para Mobile -->
+            <div id="investments-list-mobile" class="investments-mobile-list"></div>
+        </section>
+
+        <!-- MODAL: Adicionar/Editar Investimento -->
+        <div id="investment-modal" class="modal">
+            <div class="modal-content">
+                <button type="button" class="modal-close" aria-label="Fechar modal">✕</button>
+                <h2 id="investment-modal-title">Adicionar Ativo</h2>
+                <form id="investment-form" class="modal-form">
+                    <input type="hidden" id="investment-edit-id">
+                    
+                    <div class="form-group">
+                        <label for="investment-name">Nome do Ativo *</label>
+                        <input type="text" id="investment-name" placeholder="Ex: PETR4, Bitcoin, KNCR11" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="investment-type">Tipo de Investimento *</label>
+                        <select id="investment-type" required>
+                            <option value="">Selecione um tipo</option>
+                            <option value="acao">Ação (PETR4, VALE3, etc)</option>
+                            <option value="cripto">Criptomoeda (Bitcoin, Ethereum, etc)</option>
+                            <option value="fii">Fundo Imobiliário - FII (KNCR11, MXRF11, etc)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="investment-quantity">Quantidade *</label>
+                        <input type="number" id="investment-quantity" placeholder="Ex: 10" min="0.00000001" step="0.00000001" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="investment-avg-price">Preço Médio de Compra (R$) *</label>
+                        <input type="number" id="investment-avg-price" placeholder="Ex: 25.50" min="0" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="investment-current-price">Valor Atual (R$) *</label>
+                        <input type="number" id="investment-current-price" placeholder="Ex: 28.75" min="0" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="investment-date">Data de Compra</label>
+                        <input type="date" id="investment-date">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Salvar Ativo</button>
+                        <button type="button" class="btn-secondary" id="investment-cancel">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- SEÇÃO DE MÓDULOS (Todos os formulários e tabelas dos módulos) -->
+        <section id="modules" class="content-section modules grid">
+
+            <div class="card module-card">
+                <div class="card-header">
+                    <h2>Módulo Veículos</h2>
+                    <p>Cadastre carros e motos, acompanhe KM, IPVA, seguro, licenciamento e multas.</p>
+                </div>
+                <form id="vehicle-form" class="module-form">
+                    <input type="hidden" id="vehicle-edit-id">
+                    <div class="form-grid">
+                        <label>
+                            Tipo
+                            <select id="vehicle-type">
+                                <option value="Carro">Carro</option>
+                                <option value="Moto">Moto</option>
+                            </select>
+                        </label>
+                        <label>
+                            Marca
+                            <input type="text" id="vehicle-brand" placeholder="Ex: Honda" required>
+                        </label>
+                        <label>
+                            Modelo
+                            <input type="text" id="vehicle-model" placeholder="Ex: Civic" required>
+                        </label>
+                        <label>
+                            Ano
+                            <input type="number" id="vehicle-year" placeholder="2024" min="1900" max="2099" required>
+                        </label>
+                        <label>
+                            Placa
+                            <input type="text" id="vehicle-plate" placeholder="ABC1D23" required>
+                        </label>
+                        <label>
+                            KM inicial
+                            <input type="number" id="vehicle-km-initial" placeholder="0" min="0" required>
+                        </label>
+                        <label>
+                            KM atual
+                            <input type="number" id="vehicle-km-current" placeholder="0" min="0" required>
+                        </label>
+                        <label>
+                            Próxima manutenção (KM)
+                            <input type="number" id="vehicle-next-maintenance-km" placeholder="10000" min="0">
+                        </label>
+                        <label>
+                            IPVA / Seguro / Licenciamento
+                            <input type="text" id="vehicle-taxes" placeholder="IPVA: 1200, Seguro: 1700" >
+                        </label>
+                        <label>
+                            Multa (R$)
+                            <input type="number" step="0.01" id="vehicle-fine" placeholder="0.00" min="0">
+                        </label>
+                        <label>
+                            Multa paga?
+                            <select id="vehicle-fine-paid">
+                                <option value="false">Não pago</option>
+                                <option value="true">Pago</option>
+                            </select>
+                        </label>
+                        <label>
+                            Financiamento / Observações
+                            <input type="text" id="vehicle-financing" placeholder="Ex: 48x, Banco XYZ" >
+                        </label>
+                        <label>
+                            Valor mercado estimado
+                            <input type="number" step="0.01" id="vehicle-market-value" placeholder="0.00" min="0">
+                        </label>
+                        <label>
+                            Valor médio de venda
+                            <input type="number" step="0.01" id="vehicle-sale-value" placeholder="0.00" min="0">
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit">Salvar veículo</button>
+                        <button type="button" class="secondary" id="vehicle-cancel">Limpar</button>
+                    </div>
+                </form>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Veículo</th>
+                                <th>KM atual</th>
+                                <th>Próx. manut.</th>
+                                <th>IPVA / Seguro</th>
+                                <th>Multa</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vehicle-list"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card module-card">
+                <div class="card-header">
+                    <h2>Módulo Trabalho</h2>
+                    <p>Registre ganhos por plataforma, km rodado e custo com combustível.</p>
+                </div>
+                <form id="delivery-form" class="module-form">
+                    <input type="hidden" id="delivery-edit-id">
+                    <div class="form-grid">
+                        <label>
+                            Plataforma
+                            <select id="delivery-platform">
+                                <option value="Uber">Uber</option>
+                                <option value="99">99</option>
+                                <option value="iFood">iFood</option>
+                                <option value="Shopee Entregas">Shopee Entregas</option>
+                                <option value="Mercado Livre">Mercado Livre</option>
+                                <option value="Amazon Flex">Amazon Flex</option>
+                                <option value="Particular">Trabalho particular</option>
+                            </select>
+                        </label>
+                        <label>
+                            Data
+                            <input type="date" id="delivery-date" required>
+                        </label>
+                        <label>
+                            Ganho (R$)
+                            <input type="number" step="0.01" id="delivery-earning" required>
+                        </label>
+                        <label>
+                            KM rodado
+                            <input type="number" step="0.1" id="delivery-km" required>
+                        </label>
+                        <label>
+                            Custo combustível (R$)
+                            <input type="number" step="0.01" id="delivery-fuel-cost" required>
+                        </label>
+                        <label>
+                            Veículo associado
+                            <select id="delivery-vehicle"></select>
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit">Salvar entrega</button>
+                        <button type="button" class="secondary" id="delivery-cancel">Limpar</button>
+                    </div>
+                </form>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Plataforma</th>
+                                <th>Ganho</th>
+                                <th>KM</th>
+                                <th>Combustível</th>
+                                <th>Lucro</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="delivery-list"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card module-card">
+                <div class="card-header">
+                    <h2>Módulo Combustível</h2>
+                    <p>Registre abastecimentos, litros, valor e KM para medir consumo.</p>
+                </div>
+                <form id="fuel-form" class="module-form">
+                    <input type="hidden" id="fuel-edit-id">
+                    <div class="form-grid">
+                        <label>
+                            Data
+                            <input type="date" id="fuel-date" required>
+                        </label>
+                        <label>
+                            Litros
+                            <input type="number" step="0.01" id="fuel-liters" required>
+                        </label>
+                        <label>
+                            Valor (R$)
+                            <input type="number" step="0.01" id="fuel-value" required>
+                        </label>
+                        <label>
+                            KM
+                            <input type="number" step="1" id="fuel-km" required>
+                        </label>
+                        <label>
+                            Veículo
+                            <select id="fuel-vehicle"></select>
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit">Salvar abastecimento</button>
+                        <button type="button" class="secondary" id="fuel-cancel">Limpar</button>
+                    </div>
+                </form>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Litros</th>
+                                <th>Valor</th>
+                                <th>KM</th>
+                                <th>Consumo</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fuel-list"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card module-card">
+                <div class="card-header">
+                    <h2>Módulo Manutenção</h2>
+                    <p>Registre trocas e revisões com alerta por tempo e KM.</p>
+                </div>
+                <form id="maintenance-form" class="module-form">
+                    <input type="hidden" id="maintenance-edit-id">
+                    <div class="form-grid">
+                        <label>
+                            Tipo de serviço
+                            <select id="maintenance-type">
+                                <option value="Troca de óleo">Troca de óleo</option>
+                                <option value="Pneus">Pneus</option>
+                                <option value="Freios">Freios</option>
+                                <option value="Suspensão">Suspensão</option>
+                                <option value="Revisão">Revisão</option>
+                            </select>
+                        </label>
+                        <label>
+                            Data
+                            <input type="date" id="maintenance-date" required>
+                        </label>
+                        <label>
+                            KM
+                            <input type="number" step="1" id="maintenance-km" required>
+                        </label>
+                        <label>
+                            Valor (R$)
+                            <input type="number" step="0.01" id="maintenance-value" required>
+                        </label>
+                        <label>
+                            Oficina
+                            <input type="text" id="maintenance-shop" placeholder="Nome da oficina" required>
+                        </label>
+                        <label>
+                            Veículo
+                            <select id="maintenance-vehicle"></select>
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit">Salvar manutenção</button>
+                        <button type="button" class="secondary" id="maintenance-cancel">Limpar</button>
+                    </div>
+                </form>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Serviço</th>
+                                <th>Data</th>
+                                <th>KM</th>
+                                <th>Valor</th>
+                                <th>Oficina</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="maintenance-list"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card module-card">
+                <div class="card-header">
+                    <h2>Módulo Mercado</h2>
+                    <p>Controle lista de compras, histórico de gastos e preços por mercado.</p>
+                </div>
+                <form id="market-form" class="module-form">
+                    <input type="hidden" id="market-edit-id">
+                    <div class="form-grid">
+                        <label>
+                            Item
+                            <input type="text" id="market-item" placeholder="Ex: Arroz" required>
+                        </label>
+                        <label>
+                            Mercado
+                            <input type="text" id="market-store" placeholder="Ex: Carrefour" required>
+                        </label>
+                        <label>
+                            Categoria
+                            <input type="text" id="market-category" placeholder="Ex: Alimentação" required>
+                        </label>
+                        <label>
+                            Data
+                            <input type="date" id="market-date" required>
+                        </label>
+                        <label>
+                            Valor (R$)
+                            <input type="number" step="0.01" id="market-value" required>
+                        </label>
+                        <label>
+                            Quantidade
+                            <input type="number" step="1" id="market-quantity" placeholder="1" min="1" required>
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit">Salvar compra</button>
+                        <button type="button" class="secondary" id="market-cancel">Limpar</button>
+                    </div>
+                </form>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Mercado</th>
+                                <th>Categoria</th>
+                                <th>Valor</th>
+                                <th>Qtd</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="market-list"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card module-card">
+                <div class="card-header">
+                    <h2>Contas da Casa</h2>
+                    <p>Registre contas de água, luz, internet, aluguel e IPTU com alertas de vencimento.</p>
+                </div>
+                <form id="housebill-form" class="module-form">
+                    <input type="hidden" id="housebill-edit-id">
+                    <div class="form-grid">
+                        <label>
+                            Conta
+                            <input type="text" id="housebill-name" placeholder="Ex: Internet" required>
+                        </label>
+                        <label>
+                            Valor (R$)
+                            <input type="number" step="0.01" id="housebill-value" required>
+                        </label>
+                        <label>
+                            Vencimento
+                            <input type="date" id="housebill-due-date" required>
+                        </label>
+                        <label>
+                            Status
+                            <select id="housebill-status">
+                                <option value="pendente">Pendente</option>
+                                <option value="pago">Pago</option>
+                                <option value="atrasado">Atrasado</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit">Salvar conta</button>
+                        <button type="button" class="secondary" id="housebill-cancel">Limpar</button>
+                    </div>
+                </form>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Conta</th>
+                                <th>Valor</th>
+                                <th>Vencimento</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="housebill-list"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card module-card">
+                <div class="card-header">
+                    <h2>Módulo Metas</h2>
+                    <p>Cadastre metas para casa, carro, moto e reserva de emergência.</p>
+                </div>
+                <form id="goal-form" class="module-form">
+                    <input type="hidden" id="goal-edit-id">
+                    <div class="form-grid">
+                        <label>
+                            Meta
+                            <select id="goal-type">
+                                <option value="Casa">Casa</option>
+                                <option value="Carro">Carro</option>
+                                <option value="Moto">Moto</option>
+                                <option value="Reserva de emergência">Reserva de emergência</option>
+                            </select>
+                        </label>
+                        <label>
+                            Valor atual (R$)
+                            <input type="number" step="0.01" id="goal-current-value" required>
+                        </label>
+                        <label>
+                            Meta final (R$)
+                            <input type="number" step="0.01" id="goal-target-value" required>
+                        </label>
+                        <label>
+                            Prazo
+                            <input type="date" id="goal-target-date" required>
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit">Salvar meta</button>
+                        <button type="button" class="secondary" id="goal-cancel">Limpar</button>
+                    </div>
+                </form>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Meta</th>
+                                <th>Progresso</th>
+                                <th>Atual</th>
+                                <th>Objetivo</th>
+                                <th>Prazo</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="goal-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="assistant" class="content-section assistant-section hidden">
+            <div class="card assistant-card">
+                <div class="card-header">
+                    <h2>Assistente IA</h2>
+                    <p>Peça ajuda para organizar gastos e reduzir despesas.</p>
+                </div>
+                <div id="assistant-messages" class="assistant-messages">
+                    <div class="assistant-message assistant-bot">
+                        <strong>Assistente:</strong>
+                        <p>Use a caixa abaixo para perguntar como melhorar seu orçamento, ver saldo ou cadastrar compras parceladas!</p>
+                    </div>
+                </div>
+                <form id="assistant-form" class="assistant-form">
+                    <input type="text" id="assistant-input" placeholder="Ex: Gastei 1200 no nubank em 3x" required>
+                    <button type="submit">Enviar</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="filters" class="filters">
+            <div class="card filter-card">
+                <h2>Filtros</h2>
+                <form id="filter-form" class="filters-grid">
+                    <label>
+                        Data início
+                        <input type="date" id="filter-start-date">
+                    </label>
+                    <label>
+                        Data fim
+                        <input type="date" id="filter-end-date">
+                    </label>
+                    <label>
+                        Categoria
+                        <input type="text" id="filter-category" placeholder="Ex: Alimentação">
+                    </label>
+                    <label>
+                        Cartão
+                        <input type="text" id="filter-card" placeholder="Ex: Visa">
+                    </label>
+                    <label>
+                        Tipo
+                        <select id="filter-type">
+                            <option value="">Todos</option>
+                            <option value="receita">Receita</option>
+                            <option value="despesa">Despesa</option>
+                        </select>
+                    </label>
+                    <div class="filter-actions">
+                        <button type="submit">Aplicar filtro</button>
+                        <button type="button" id="clear-filters" class="secondary">Limpar</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- MODAL DE TRANSAÇÃO -->
+        <div id="transaction-modal" class="modal-overlay">
+            <div class="modal-content">
+                <div class="table-header">
+                    <h2>Nova transação</h2>
+                    <button type="button" class="secondary" onclick="closeModal('transaction-modal')">✕</button>
+                </div>
+                <div class="card form-card" id="transaction-form-card">
+                    <form id="transaction-form">
+                        <input type="hidden" id="edit-id">
+                        <label>
+                            Descrição
+                            <input type="text" id="description" placeholder="Ex: conta de luz" required>
+                        </label>
+                        <label>
+                            Valor Total
+                            <input type="number" step="0.01" id="amount" placeholder="1000,00" required>
+                        </label>
+                        <label>
+                            Tipo
+                            <select id="type">
+                                <option value="despesa">Despesa</option>
+                                <option value="receita">Receita</option>
+                            </select>
+                        </label>
+                        <label>
+                            Cartão / Credor (opcional para receitas)
+                            <input type="text" id="transaction-card" placeholder="Ex: Nubank, PIX, Conta de luz">
+                        </label>
+                        <div id="payment-status-group" class="payment-status-group hidden">
+                            <span class="field-label">Status do Pagamento</span>
+                            <div class="payment-status-options">
+                                <label class="payment-option">
+                                    <input type="radio" name="payment-status" id="payment-status-avista" value="avista" checked>
+                                    Pago à Vista
+                                </label>
+                                <label class="payment-option">
+                                    <input type="radio" name="payment-status" id="payment-status-fatura" value="fatura">
+                                    À Prazo/Fatura
+                                </label>
+                            </div>
+                        </div>
+                        <label id="invoice-due-date-transaction-label" class="hidden">
+                            Data de Vencimento da Fatura
+                            <input type="date" id="invoice-due-date-transaction">
+                        </label>
+                        <label id="installments-label" class="hidden">
+                            Parcelas (apenas com cartão)
+                            <select id="installments">
+                                <option value="1">À vista (1x)</option>
+                                <option value="2">2x</option>
+                                <option value="3">3x</option>
+                                <option value="4">4x</option>
+                                <option value="5">5x</option>
+                                <option value="6">6x</option>
+                                <option value="10">10x</option>
+                                <option value="12">12x</option>
+                            </select>
+                        </label>
+                        <label>
+                            Categoria
+                            <input type="text" id="category" placeholder="Ex: Alimentação" required>
+                        </label>
+                        <label>
+                            Data
+                            <input type="date" id="date" required>
+                        </label>
+                        <label>
+                            Recorrência Fixa
+                            <select id="recurrence">
+                                <option value="none">Nenhuma</option>
+                                <option value="mensal">Mensal</option>
+                                <option value="semanal">Semanal</option>
+                            </select>
+                        </label>
+                        <div class="form-actions">
+                            <button type="submit" id="transaction-submit-btn">Adicionar transação</button>
+                            <button type="button" id="cancel-transaction" class="secondary hidden">Cancelar edição</button>
+                            <button type="button" onclick="closeModal('transaction-modal')" class="secondary">Fechar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL DE FATURA -->
+        <div id="invoice-modal" class="modal-overlay">
+            <div class="modal-content">
+                <div class="table-header">
+                    <h2>Faturas do Cartão</h2>
+                    <button type="button" class="secondary" onclick="closeModal('invoice-modal')">✕</button>
+                </div>
+                <div class="card form-card" id="invoice-form-card">
+                    <form id="invoice-form">
+                        <input type="hidden" id="invoice-edit-id">
+                        <label>
+                            Cartão
+                            <input type="text" id="card-name" placeholder="Ex: Visa" required>
+                        </label>
+                        <label>
+                            Valor total da fatura
+                            <input type="number" step="0.01" id="invoice-amount" placeholder="1680,00" required>
+                        </label>
+                        <label>
+                            Vencimento
+                            <input type="date" id="invoice-due-date" required>
+                        </label>
+                        <label>
+                            Recorrência
+                            <select id="invoice-recurrence">
+                                <option value="none">Nenhuma</option>
+                                <option value="mensal">Mensal</option>
+                            </select>
+                        </label>
+                        <div id="invoice-payment-section" class="invoice-payment-section hidden">
+                            <div class="invoice-summary-readonly">
+                                <p>Valor pago: <strong id="invoice-paid-display">—</strong></p>
+                                <p>Restante: <strong id="invoice-remaining-display">—</strong></p>
+                                <p>Status: <span id="invoice-status-display" class="tag pendente">Pendente</span></p>
+                            </div>
+                            <label>
+                                Registrar Pagamento
+                                <input type="number" step="0.01" id="invoice-payment-amount" placeholder="Ex: 680,00" min="0">
+                            </label>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" id="invoice-submit-btn">Adicionar fatura</button>
+                            <button type="button" id="cancel-invoice" class="secondary hidden">Cancelar edição</button>
+                            <button type="button" onclick="closeModal('invoice-modal')" class="secondary">Fechar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <button class="fab" onclick="openModal('transaction-modal')" title="Nova Transação">
+            <span style="font-size: 28px;">+</span>
+        </button>
+        
+        <!-- Botão para abrir faturas sem rolar -->
+        <button class="fab" onclick="openModal('invoice-modal')" title="Ver Faturas" style="right: 110px; background-color: var(--laranja);">
+            <span style="font-size: 22px;">💳</span>
+        </button>
+
+        <p class="footer-note">Os dados são armazenados localmente e sincronizados com o backend quando você estiver logado.</p>
+    </main>
+
+        <nav class="bottomnav" aria-label="Navegação inferior">
+            <button class="bottomnav-item active" data-tab="dashboard" type="button" title="Dashboard">🏠</button>
+            <button class="bottomnav-item" data-tab="board" type="button" title="Transações">💰</button>
+            <button class="bottomnav-item" data-tab="invoices" type="button" title="Faturas">📄</button>
+            <button class="bottomnav-item" data-tab="reports" type="button" title="Relatórios">📊</button>
+            <button class="bottomnav-item" data-tab="modules" type="button" title="Módulos">🧩</button>
+            <button class="bottomnav-item" data-tab="assistant" type="button" title="Assistente">🤖</button>
+        </nav>
+</div>
+
+    <!-- Firebase Compat SDKs (Mantidos conforme seu projeto original) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Biblioteca de Gráficos Importada ANTES do script customizado -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js?v=5"></script>
+    <script src="investment-functions.js?v=1"></script>
+    
+    <!-- Event Listeners para Investimentos -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Elementos de Investimentos
+        const addInvestmentBtn = document.getElementById('add-investment-btn');
+        const investmentForm = document.getElementById('investment-form');
+        const investmentCancelBtn = document.getElementById('investment-cancel');
+        const investmentFilterBtns = document.querySelectorAll('.filter-btn');
+
+        // Botão Adicionar Investimento
+        if (addInvestmentBtn) {
+            addInvestmentBtn.addEventListener('click', openAddInvestmentModal);
+        }
+
+        // Formulário de Investimento
+        if (investmentForm) {
+            investmentForm.addEventListener('submit', saveInvestment);
+        }
+
+        // Botão Cancelar
+        if (investmentCancelBtn) {
+            investmentCancelBtn.addEventListener('click', () => {
+                if (investmentForm) investmentForm.reset();
+                if (document.getElementById('investment-edit-id')) {
+                    document.getElementById('investment-edit-id').value = '';
+                }
+                closeModal('investment-modal');
+            });
+        }
+
+        // Filtros de Tipo de Ativo
+        if (investmentFilterBtns.length > 0) {
+            investmentFilterBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const filter = btn.getAttribute('data-filter');
+                    filterInvestmentsByType(filter);
+                });
+            });
+        }
+
+        // Renderizar investimentos ao carregar a página
+        if (document.getElementById('investments')) {
+            renderInvestmentsTable('all');
+        }
+    });
+    </script>
+</body>
+</html>

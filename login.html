@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>FinanceHub Pro - Inteligência Financeira Total</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="FinanceHub">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="login-container" class="login-screen">
+        <div class="login-box">
+            <h1 id="auth-title">💰 FinanceHub Pro</h1>
+            <p id="auth-description">Inteligência financeira completa com parcelamento automático, metas de orçamento e análise inteligente.</p>
+            <form id="login-form" class="auth-form">
+                <label>
+                    Usuário ou email
+                    <input type="text" id="login-user" placeholder="Seu usuário ou email" required>
+                </label>
+                <label>
+                    Senha
+                    <input type="password" id="login-password" placeholder="••••••••" required>
+                </label>
+                <button type="submit">Entrar</button>
+                <button type="button" id="google-login" class="secondary google-btn">Entrar com Google</button>
+                <p id="login-error" class="login-error"></p>
+            </form>
+            <form id="register-form" class="auth-form hidden">
+                <label>
+                    Usuário
+                    <input type="text" id="register-user" placeholder="Escolha um usuário" required>
+                </label>
+                <label>
+                    Email
+                    <input type="email" id="register-email" placeholder="seu@email.com" required>
+                </label>
+                <label>
+                    Senha
+                    <input type="password" id="register-password" placeholder="••••••••" required>
+                </label>
+                <label>
+                    Confirmar senha
+                    <input type="password" id="register-password-confirm" placeholder="••••••••" required>
+                </label>
+                <button type="submit" class="secondary">Cadastrar</button>
+                <p id="register-error" class="login-error"></p>
+            </form>
+            <div class="auth-toggle">
+                <span id="auth-toggle-text">Ainda não tem conta?</span>
+                <button id="switch-register" type="button" class="secondary">Criar conta</button>
+                <button id="switch-login" type="button" class="secondary hidden">Voltar ao login</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
